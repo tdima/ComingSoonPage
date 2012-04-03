@@ -12,11 +12,11 @@ import java.util.regex.Pattern;
 
 public class Control {
     private final static Pattern pattern = Pattern.compile("([a-zA-Z0-9_\\.\\-\\+])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z]{2,4})");
-    private final static DSWork dsw = new DSWork();
-    private final static Answer answer = new Answer();
+    private final DSWork dsw = new DSWork();
+    private final  Answer answer = new Answer();
     public Control() {
     }
-    public static Answer addEMail(String email)  {
+    public Answer addEMail(String email)  {
         if(validateEMail(email))    {
             //try adding email at DS.
             if(dsw.addEMail(email) != null) {//address successfully added
@@ -34,7 +34,7 @@ public class Control {
             return formAnswer(true, "the e-mail is incorrectly entered!");
         }
     }
-    public static Answer deleteEMail(String email)   {
+    public Answer deleteEMail(String email)   {
         //try delete e-mail.
         if(dsw.deleteEMail(email) != null)  {//e-mail is deleted
             return formAnswer(false, "e-mail is deleted.");
@@ -42,14 +42,14 @@ public class Control {
             return formAnswer(true, "e-mail not found.");
         }
     }
-    public static List<EMailAddress> getEMails() {
+    public List<EMailAddress> getEMails() {
         return dsw.getEMails();
     }
     private static boolean validateEMail(String email) {
         final Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-    public static void mailing() throws EMailException {
+    public  void mailing() throws EMailException {
         //get all address.
         List<EMailAddress> emails = getEMails();
         for (EMailAddress e: emails) {
@@ -57,7 +57,7 @@ public class Control {
             SendEMail.send("evereday emailing", email, email);
         }
     }
-    private static Answer formAnswer(boolean err, String mess)  {
+    private  Answer formAnswer(boolean err, String mess)  {
         answer.setErr(err);
         answer.setMess(mess);
         return answer;

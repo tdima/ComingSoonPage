@@ -20,7 +20,8 @@ import java.util.logging.Logger;
 @RequestMapping("/")
 public class MainController {
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static Answer answer = new Answer();
+    private final Control ctrl = new Control();
+    private Answer answer = new Answer();
     @RequestMapping(method = RequestMethod.GET)
     public static String mainPage()  {
         System.out.println("MainPageController");
@@ -28,16 +29,16 @@ public class MainController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/list")
-    public static String getEMails(ModelMap model)   {
-        model.addAttribute("listEMails", Control.getEMails());
+    public String getEMails(ModelMap model)   {
+        model.addAttribute("listEMails", ctrl.getEMails());
         return "list";
     }
     @RequestMapping(method = RequestMethod.GET, value = "/adding", params = "email")
     @ResponseBody
-    public static String addEMail(HttpServletRequest request)   {
+    public String addEMail(HttpServletRequest request)   {
         String email = request.getParameter("email");
         if(email != null)   {
-            answer = Control.addEMail(email);
+            answer = ctrl.addEMail(email);
             try {
                 return objectMapper.writeValueAsString(answer);
             } catch (IOException e) {
@@ -48,10 +49,10 @@ public class MainController {
     }
     @RequestMapping(method = RequestMethod.GET, value = "/deleting", params = "email")
     @ResponseBody
-    public static String deleteEMail(HttpServletRequest request)   {
+    public String deleteEMail(HttpServletRequest request)   {
         String email = request.getParameter("email");
         if(email != null)   {
-            answer = Control.deleteEMail(email);
+            answer = ctrl.deleteEMail(email);
             try {
                 return objectMapper.writeValueAsString(answer);
             } catch (IOException e) {
@@ -61,9 +62,9 @@ public class MainController {
         return null;
     }
     @RequestMapping("/mailing")
-    public static void mailing()    {
+    public void mailing()    {
         try {
-            Control.mailing();
+            ctrl.mailing();
         } catch (EMailException e) {
 
         }
