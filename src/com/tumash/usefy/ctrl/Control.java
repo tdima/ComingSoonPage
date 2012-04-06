@@ -5,8 +5,12 @@ import com.tumash.usefy.json.Answer;
 import com.tumash.usefy.objwork.DSWork;
 import com.tumash.usefy.objwork.EMailAddress;
 import com.tumash.usefy.emailsend.*;
+import com.tumash.usefy.tag.Tag;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,10 +61,33 @@ public class Control {
             SendEMail.send("evereday emailing", email, email);
         }
     }
+    public List<Tag> getTags()  {
+        return dsw.getTags();
+    }
     private  Answer formAnswer(boolean err, String mess)  {
         answer.setErr(err);
         answer.setMess(mess);
         return answer;
 
     }
+    public Map<String, Object> getDetailTagById(Long id)   {
+        final Map<String, Object> map = new HashMap<String, Object>();
+        //get tag by id.
+        Tag tag = dsw.getTagById(id);
+        map.put("tag", tag);
+        if(tag != null) {
+            List<Long> listParentsId = tag.getParents();
+            //get all parents tags.
+            List<Tag> listParents = null;
+            if(listParentsId != null)   {
+                listParents = dsw.getParentsById(listParentsId);
+                map.put("listParents", listParents);
+            }
+                      //get all child tags.
+            List<Tag> listChild = dsw.getChildById(id);
+            map.put("listChild", listChild);
+        }
+        return map;
+    }
+    
 }

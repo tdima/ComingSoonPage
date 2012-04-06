@@ -3,6 +3,8 @@ package com.tumash.usefy.objwork;
 import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.Query;
+import com.tumash.usefy.tag.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +12,12 @@ import java.util.List;
 
 public class DSWork {
     private  Objectify ofy;
-    public DSWork() {
+    static {
         ObjectifyService.register(EMailAddress.class);//register(EMailAddress.class);
+        ObjectifyService.register(Tag.class);
+    }
+    public DSWork() {
+
     }
     /*public void begin() {
         ofy = ObjectifyService.beginTransaction();
@@ -48,6 +54,25 @@ public class DSWork {
 
         return list;
 
+    }
+    public List<Tag> getTags()   {
+        ofy = ObjectifyService.begin();
+        List<Tag> list = ofy.query(Tag.class).list();
+        return list;
+    }
+    public Tag getTagById(Long id)  {
+        ofy = ObjectifyService.begin();
+        return ofy.query(Tag.class).filter("id =", id).get();
+    }
+    public List<Tag> getParentsById(List<Long> listId)   {
+        ofy = ObjectifyService.begin();
+        return ofy.query(Tag.class).filter("id in", listId).list();
+    }
+    public List<Tag> getChildById(Long id)  {
+        ofy = ObjectifyService.begin();
+        List<Long> list = new ArrayList<Long>();
+        list.add(id);
+        return ofy.query(Tag.class).filter("parents in", list).list();
     }
 
 

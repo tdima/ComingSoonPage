@@ -6,6 +6,7 @@ import com.tumash.usefy.json.Answer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
@@ -68,5 +70,21 @@ public class MainController {
         } catch (EMailException e) {
 
         }
+    }
+    @RequestMapping("/tags")
+    public String getTags(ModelMap modelMap)    {
+        modelMap.addAttribute("listTags", ctrl.getTags());
+        return "tags";
+    }
+    @RequestMapping("/tags/{id}")
+    public String getTagById(ModelMap modelMap, @PathVariable("id") Long id)    {
+        //запросы к БД для выбора все родительских тегов и дочерних.
+        if(id > 0)  {
+            Map map = ctrl.getDetailTagById(id);
+            modelMap.addAttribute("tag", map.get("tag"));
+            modelMap.addAttribute("listParents", map.get("listParents"));
+            modelMap.addAttribute("listChild", map.get("listChild"));
+        }
+        return "details";
     }
 }
